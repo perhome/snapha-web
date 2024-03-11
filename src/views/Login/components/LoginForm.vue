@@ -1,36 +1,34 @@
 <script setup lang="tsx">
 import { reactive, ref, watch, onMounted, unref } from 'vue'
 import { Form, FormSchema } from '@/components/Form'
-import { useI18n } from '@/hooks/web/useI18n'
-import { ElCheckbox, ElLink } from 'element-plus'
+
+// import { useI18n } from '@/hooks/web/useI18n'
+import { ElButton, ElCheckbox, ElLink } from 'element-plus'
 import { useForm } from '@/hooks/web/useForm'
-import { loginApi, getTestRoleApi, getAdminRoleApi } from '@/api/login'
+import request from '@/axios'
+// import { useStorage } from '@/hooks/web/useStorage'
+import { getTestRoleApi, getAdminRoleApi } from '@/api/login'
 import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
-import { UserType } from '@/api/login/types'
+import { UserLoginType, UserType } from '@/api/login/types'
 import { useValidator } from '@/hooks/web/useValidator'
 import { Icon } from '@/components/Icon'
 import { useUserStore } from '@/store/modules/user'
-import { BaseButton } from '@/components/Button'
+// import { BaseButton } from '@/components/Button'
 
 const { required } = useValidator()
-
 const emit = defineEmits(['to-register'])
 
 const appStore = useAppStore()
-
 const userStore = useUserStore()
-
 const permissionStore = usePermissionStore()
-
 const { currentRoute, addRoute, push } = useRouter()
-
-const { t } = useI18n()
+// const { setStorage } = useStorage()
 
 const rules = {
-  username: [required()],
+  passport: [required()],
   password: [required()]
 }
 
@@ -43,27 +41,27 @@ const schema = reactive<FormSchema[]>([
     formItemProps: {
       slots: {
         default: () => {
-          return <h2 class="text-2xl font-bold text-center w-[100%]">{t('login.login')}</h2>
+          return <h2 class="text-2xl font-bold text-center w-[100%]">登陆</h2>
         }
       }
     }
   },
   {
-    field: 'username',
-    label: t('login.username'),
-    // value: 'admin',
+    field: 'passport',
+    label: '账户',
+    value: 'admin',
     component: 'Input',
     colProps: {
       span: 24
     },
     componentProps: {
-      placeholder: 'admin or test'
+      placeholder: '你的账户'
     }
   },
   {
     field: 'password',
-    label: t('login.password'),
-    // value: 'admin',
+    label: '密码',
+    value: 'admin',
     component: 'InputPassword',
     colProps: {
       span: 24
@@ -72,7 +70,7 @@ const schema = reactive<FormSchema[]>([
       style: {
         width: '100%'
       },
-      placeholder: 'admin or test'
+      placeholder: '你的账户密码'
     }
   },
   {
@@ -86,9 +84,9 @@ const schema = reactive<FormSchema[]>([
           return (
             <>
               <div class="flex justify-between items-center w-[100%]">
-                <ElCheckbox v-model={remember.value} label={t('login.remember')} size="small" />
+                <ElCheckbox v-model={remember.value} label="记住用户" size="small" />
                 <ElLink type="primary" underline={false}>
-                  {t('login.forgetPassword')}
+                  忘记密码
                 </ElLink>
               </div>
             </>
@@ -108,19 +106,14 @@ const schema = reactive<FormSchema[]>([
           return (
             <>
               <div class="w-[100%]">
-                <BaseButton
-                  loading={loading.value}
-                  type="primary"
-                  class="w-[100%]"
-                  onClick={signIn}
-                >
-                  {t('login.login')}
-                </BaseButton>
+                <ElButton loading={loading.value} type="primary" class="w-[100%]" onClick={signIn}>
+                  登陆
+                </ElButton>
               </div>
               <div class="w-[100%] mt-15px">
-                <BaseButton class="w-[100%]" onClick={toRegister}>
-                  {t('login.register')}
-                </BaseButton>
+                <ElButton class="w-[100%]" onClick={toRegister}>
+                  注册
+                </ElButton>
               </div>
             </>
           )
@@ -131,7 +124,7 @@ const schema = reactive<FormSchema[]>([
   {
     field: 'other',
     component: 'Divider',
-    label: t('login.otherLogin'),
+    label: '其它方式',
     componentProps: {
       contentPosition: 'center'
     }
@@ -191,8 +184,8 @@ const remember = ref(userStore.getRememberMe)
 const initLoginInfo = () => {
   const loginInfo = userStore.getLoginInfo
   if (loginInfo) {
-    const { username, password } = loginInfo
-    setValues({ username, password })
+    const { passport, password } = loginInfo
+    setValues({ passport, password })
   }
 }
 onMounted(() => {
@@ -226,16 +219,17 @@ const signIn = async () => {
   await formRef?.validate(async (isValid) => {
     if (isValid) {
       loading.value = true
-      const formData = await getFormData<UserType>()
+      const formData = await getFormData<UserLoginType>()
 
+      console.log('formData', formData)
       try {
-        const res = await loginApi(formData)
+        const res = await request.post({ url: '/api/v1/user/login', data: formData })
 
         if (res) {
           // 是否记住我
           if (unref(remember)) {
             userStore.setLoginInfo({
-              username: formData.username,
+              passport: formData.passport,
               password: formData.password
             })
           } else {
@@ -266,7 +260,7 @@ const signIn = async () => {
 const getRole = async () => {
   const formData = await getFormData<UserType>()
   const params = {
-    roleName: formData.username
+    roleName: formData.roles
   }
   const res =
     appStore.getDynamicRouter && appStore.getServerDynamicRouter

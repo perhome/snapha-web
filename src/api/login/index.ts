@@ -2,7 +2,7 @@ import request from '@/axios'
 import type { UserType } from './types'
 
 interface RoleParams {
-  roleName: string
+  roleName: string[]
 }
 
 export const loginApi = (data: UserType): Promise<IResponse<UserType>> => {

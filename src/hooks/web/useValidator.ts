@@ -1,7 +1,4 @@
-import { useI18n } from '@/hooks/web/useI18n'
 import { FormItemRule } from 'element-plus'
-
-const { t } = useI18n()
 
 interface LengthRange {
   min: number
@@ -13,7 +10,7 @@ export const useValidator = () => {
   const required = (message?: string): FormItemRule => {
     return {
       required: true,
-      message: message || t('common.required')
+      message: message || '该项为必填项'
     }
   }
 
@@ -23,7 +20,7 @@ export const useValidator = () => {
     return {
       min,
       max,
-      message: message || t('common.lengthRange', { min, max })
+      message: message || `长度在 ${min} 到 ${max} 个字符`
     }
   }
 
@@ -31,7 +28,7 @@ export const useValidator = () => {
     return {
       validator: (_, val, callback) => {
         if (val?.indexOf(' ') !== -1) {
-          callback(new Error(message || t('common.notSpace')))
+          callback(new Error(message || '不能包含空格'))
         } else {
           callback()
         }
@@ -43,7 +40,7 @@ export const useValidator = () => {
     return {
       validator: (_, val, callback) => {
         if (/[`~!@#$%^&*()_+<>?:"{},.\/;'[\]]/gi.test(val)) {
-          callback(new Error(message || t('common.notSpecialCharacters')))
+          callback(new Error(message || '不能包含特殊字符'))
         } else {
           callback()
         }
@@ -88,7 +85,7 @@ export const useValidator = () => {
     return {
       validator: (_, val, callback) => {
         if (!val) {
-          callback(new Error(message || t('common.required')))
+          callback(new Error(message || '必须'))
         } else {
           callback()
         }

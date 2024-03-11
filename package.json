@@ -1,6 +1,6 @@
 {
-  "name": "vue-element-plus-admin",
-  "version": "2.7.0",
+  "name": "snapha-web",
+  "version": "0.0.1",
   "description": "一套基于vue3、element-plus、typesScript、vite4的后台集成方案。",
   "author": "Archer <502431556@qq.com>",
   "private": false,
@@ -58,8 +58,8 @@
     "xgplayer": "^3.0.13"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.0.1",
-    "@commitlint/config-conventional": "^19.0.0",
+    "@commitlint/cli": "^19.0.3",
+    "@commitlint/config-conventional": "^19.0.3",
     "@iconify/json": "^2.2.187",
     "@intlify/unplugin-vue-i18n": "^2.0.0",
     "@types/fs-extra": "^11.0.4",

@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import { store } from '../index'
+
+import { store } from '@/store'
 import { UserLoginType, UserType } from '@/api/login/types'
 import { ElMessageBox } from 'element-plus'
-import { useI18n } from '@/hooks/web/useI18n'
 import { loginOutApi } from '@/api/login'
 import { useTagsViewStore } from './tagsView'
 import router from '@/router'
@@ -62,10 +62,9 @@ export const useUserStore = defineStore('user', {
       this.roleRouters = roleRouters
     },
     logoutConfirm() {
-      const { t } = useI18n()
-      ElMessageBox.confirm(t('common.loginOutMessage'), t('common.reminder'), {
-        confirmButtonText: t('common.ok'),
-        cancelButtonText: t('common.cancel'),
+      ElMessageBox.confirm('注销', '提醒', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
         type: 'warning'
       })
         .then(async () => {
@@ -96,6 +95,15 @@ export const useUserStore = defineStore('user', {
   },
   persist: true
 })
+
+// export interface UserState {
+//   accessToken: String
+//   refreshToken: String
+//   passport: String
+//   name: String
+//   uid: Number | null
+//   role: String
+// }
 
 export const useUserStoreWithOut = () => {
   return useUserStore(store)

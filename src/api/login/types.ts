@@ -1,11 +1,11 @@
-export interface UserLoginType {
-  username: string
+export type UserLoginType = {
+  passport: string
   password: string
 }
 
-export interface UserType {
-  username: string
+export type UserType = {
+  passport: string
   password: string
-  role: string
-  roleId: string
+  roles: string[]
+  permissions: string[]
 }

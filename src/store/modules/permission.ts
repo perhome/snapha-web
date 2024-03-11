@@ -5,7 +5,7 @@ import {
   generateRoutesByServer,
   flatMultiLevelRoutes
 } from '@/utils/routerHelper'
-import { store } from '../index'
+import { store } from '@/store'
 import { cloneDeep } from 'lodash-es'
 
 export interface PermissionState {

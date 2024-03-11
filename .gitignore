@@ -7,4 +7,6 @@ dist-ssr
 *-lock.*
 pnpm-debug
 stats.html
+.idea/
+yarn.lock
 

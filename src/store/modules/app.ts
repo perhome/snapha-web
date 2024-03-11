@@ -3,9 +3,12 @@ import { store } from '../index'
 import { setCssVar, humpToUnderline } from '@/utils'
 import { colorIsDark, hexToRGB, lighten, mix } from '@/utils/color'
 import { ElMessage, ComponentSize } from 'element-plus'
+
 import { useCssVar } from '@vueuse/core'
 import { unref } from 'vue'
 import { useDark } from '@vueuse/core'
+// import { useStorage } from '@/hooks/web/useStorage'
+// const { getStorage, setStorage } = useStorage('localStorage')
 
 interface AppState {
   breadcrumb: boolean
