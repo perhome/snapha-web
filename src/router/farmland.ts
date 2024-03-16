@@ -4,13 +4,18 @@ export const farmlandRouter: AppRouteRecordRaw = {
   path: '/farmland',
   component: Layout,
   name: 'FarmLand',
+  meta: {
+    title: '农田管理',
+    icon: 'ant-design:dashboard-filled',
+    role: ['MANAGER']
+  },
   children: [
     {
       path: 'index',
       name: 'FarmLandIndex',
       component: () => import('@/views/empty.vue'),
       meta: {
-        title: '农田管理'
+        title: '农田区块'
       }
     },
     {
@@ -22,18 +27,13 @@ export const farmlandRouter: AppRouteRecordRaw = {
       }
     },
     {
-      path: 'cfr-product/output',
-      name: 'FarmlandCfrProductOutput',
+      path: 'cfr-product/yield',
+      name: 'FarmlandCfrProductYield',
       component: () => import('@/views/empty.vue'),
       meta: {
-        hidden: true,
         breadcrumb: true,
-        activeMenu: '/farmland/index',
         title: '下菜单记录'
       }
     }
-  ],
-  meta: {
-    roles: ['FARMLAND']
-  }
+  ]
 }

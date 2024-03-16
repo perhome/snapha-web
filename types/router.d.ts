@@ -44,6 +44,7 @@ interface RouteMetaCustom extends Record<string | number | symbol, unknown> {
   activeMenu?: string
   noTagsView?: boolean
   canTo?: boolean
+  role?: string[]
   permission?: string[]
 }
 

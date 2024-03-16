@@ -5,6 +5,7 @@ import type { App } from 'vue'
 import { Layout } from '@/utils/routerHelper'
 
 import { NO_RESET_WHITE_LIST } from '@/constants'
+import { farmlandRouter } from '@/router/farmland'
 
 export const constantRouterMap: AppRouteRecordRaw[] = [
   {
@@ -110,7 +111,8 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         }
       }
     ]
-  }
+  },
+  farmlandRouter
 ]
 
 const router = createRouter({

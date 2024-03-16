@@ -16,8 +16,6 @@ const prefixCls = getPrefixCls('login')
 
 const appStore = useAppStore()
 
-// const { t } = useI18n()
-
 const isLogin = ref(true)
 
 const toRegister = () => {

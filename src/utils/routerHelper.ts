@@ -54,26 +54,12 @@ export const generateRoutesByFrontEnd = (
 
     let data: Nullable<AppRouteRecordRaw> = null
 
-    let onlyOneChild: Nullable<string> = null
-    if (route.children && route.children.length === 1 && !meta.alwaysShow) {
-      onlyOneChild = (
-        isUrl(route.children[0].path)
-          ? route.children[0].path
-          : pathResolve(pathResolve(basePath, route.path), route.children[0].path)
-      ) as string
-    }
-
-    // 开发者可以根据实际情况进行扩展
-    for (const item of keys) {
-      // 通过路径去匹配
-      if (isUrl(item) && (onlyOneChild === item || route.path === item)) {
+    if (meta.role) {
+      if (meta.role.some((el) => keys.includes(el))) {
         data = Object.assign({}, route)
-      } else {
-        const routePath = (onlyOneChild ?? pathResolve(basePath, route.path)).trim()
-        if (routePath === item || meta.followRoute === item) {
-          data = Object.assign({}, route)
-        }
       }
+    } else {
+      data = Object.assign({}, route)
     }
 
     // recursive child routes

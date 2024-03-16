@@ -3,9 +3,16 @@ export type UserLoginType = {
   password: string
 }
 
+export type AuthType = {
+  accessToken: string
+  refreshToken: string
+}
+
 export type UserType = {
+  uid: string
+  usn: string
+  name: string
   passport: string
-  password: string
   roles: string[]
   permissions: string[]
 }

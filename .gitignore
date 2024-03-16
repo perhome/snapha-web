@@ -9,4 +9,5 @@ pnpm-debug
 stats.html
 .idea/
 yarn.lock
+.env.pro
 

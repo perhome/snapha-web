@@ -71,6 +71,9 @@ const service = {
       controller.abort()
     }
     abortControllerMap.clear()
+  },
+  getAxiosInstance(): AxiosInstance {
+    return axiosInstance
   }
 }
 

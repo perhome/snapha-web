@@ -46,7 +46,12 @@ declare global {
   }
 
   declare interface IResponse<T = any> {
+    timestamp?: number
+    status?: number
+    path?: string
+
     code: number
+    error: string
     data: T extends any ? T : T & any
   }
 

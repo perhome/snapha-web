@@ -10,7 +10,8 @@ import router from '@/router'
 interface UserState {
   userInfo?: UserType
   tokenKey: string
-  token: string
+  accessToken: string
+  refreshToken: string
   roleRouters?: string[] | AppCustomRouteRecordRaw[]
   rememberMe: boolean
   loginInfo?: UserLoginType
@@ -21,7 +22,8 @@ export const useUserStore = defineStore('user', {
     return {
       userInfo: undefined,
       tokenKey: 'Authorization',
-      token: '',
+      accessToken: '',
+      refreshToken: '',
       roleRouters: undefined,
       // 记住我
       rememberMe: true,
@@ -32,8 +34,11 @@ export const useUserStore = defineStore('user', {
     getTokenKey(): string {
       return this.tokenKey
     },
-    getToken(): string {
-      return this.token
+    getAccessToken(): string {
+      return this.accessToken
+    },
+    getRefreshToken(): string {
+      return this.refreshToken
     },
     getUserInfo(): UserType | undefined {
       return this.userInfo
@@ -52,8 +57,11 @@ export const useUserStore = defineStore('user', {
     setTokenKey(tokenKey: string) {
       this.tokenKey = tokenKey
     },
-    setToken(token: string) {
-      this.token = token
+    setAccessToken(token: string) {
+      this.accessToken = token
+    },
+    setRefreshToken(token: string) {
+      this.refreshToken = token
     },
     setUserInfo(userInfo?: UserType) {
       this.userInfo = userInfo
@@ -78,7 +86,8 @@ export const useUserStore = defineStore('user', {
     reset() {
       const tagsViewStore = useTagsViewStore()
       tagsViewStore.delAllViews()
-      this.setToken('')
+      this.setAccessToken('')
+      this.setRefreshToken('')
       this.setUserInfo(undefined)
       this.setRoleRouters([])
       router.replace('/login')
@@ -95,15 +104,6 @@ export const useUserStore = defineStore('user', {
   },
   persist: true
 })
-
-// export interface UserState {
-//   accessToken: String
-//   refreshToken: String
-//   passport: String
-//   name: String
-//   uid: Number | null
-//   role: String
-// }
 
 export const useUserStoreWithOut = () => {
   return useUserStore(store)

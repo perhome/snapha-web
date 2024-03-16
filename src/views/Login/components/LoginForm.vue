@@ -2,21 +2,17 @@
 import { reactive, ref, watch, onMounted, unref } from 'vue'
 import { Form, FormSchema } from '@/components/Form'
 
-// import { useI18n } from '@/hooks/web/useI18n'
 import { ElButton, ElCheckbox, ElLink } from 'element-plus'
 import { useForm } from '@/hooks/web/useForm'
-import request from '@/axios'
-// import { useStorage } from '@/hooks/web/useStorage'
-import { getTestRoleApi, getAdminRoleApi } from '@/api/login'
+
+import { getUserInfoApi, loginApi } from '@/api/login'
 import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
-import { UserLoginType, UserType } from '@/api/login/types'
+import { UserLoginType } from '@/api/login/types'
 import { useValidator } from '@/hooks/web/useValidator'
-import { Icon } from '@/components/Icon'
 import { useUserStore } from '@/store/modules/user'
-// import { BaseButton } from '@/components/Button'
 
 const { required } = useValidator()
 const emit = defineEmits(['to-register'])
@@ -25,7 +21,6 @@ const appStore = useAppStore()
 const userStore = useUserStore()
 const permissionStore = usePermissionStore()
 const { currentRoute, addRoute, push } = useRouter()
-// const { setStorage } = useStorage()
 
 const rules = {
   passport: [required()],
@@ -49,7 +44,7 @@ const schema = reactive<FormSchema[]>([
   {
     field: 'passport',
     label: '账户',
-    value: 'admin',
+    value: 'demo',
     component: 'Input',
     colProps: {
       span: 24
@@ -61,7 +56,7 @@ const schema = reactive<FormSchema[]>([
   {
     field: 'password',
     label: '密码',
-    value: 'admin',
+    value: 'demo',
     component: 'InputPassword',
     colProps: {
       span: 24
@@ -120,64 +115,8 @@ const schema = reactive<FormSchema[]>([
         }
       }
     }
-  },
-  {
-    field: 'other',
-    component: 'Divider',
-    label: '其它方式',
-    componentProps: {
-      contentPosition: 'center'
-    }
-  },
-  {
-    field: 'otherIcon',
-    colProps: {
-      span: 24
-    },
-    formItemProps: {
-      slots: {
-        default: () => {
-          return (
-            <>
-              <div class="flex justify-between w-[100%]">
-                <Icon
-                  icon="ant-design:github-filled"
-                  size={iconSize}
-                  class="cursor-pointer ant-icon"
-                  color={iconColor}
-                  hoverColor={hoverColor}
-                />
-                <Icon
-                  icon="ant-design:wechat-filled"
-                  size={iconSize}
-                  class="cursor-pointer ant-icon"
-                  color={iconColor}
-                  hoverColor={hoverColor}
-                />
-                <Icon
-                  icon="ant-design:alipay-circle-filled"
-                  size={iconSize}
-                  color={iconColor}
-                  hoverColor={hoverColor}
-                  class="cursor-pointer ant-icon"
-                />
-                <Icon
-                  icon="ant-design:weibo-circle-filled"
-                  size={iconSize}
-                  color={iconColor}
-                  hoverColor={hoverColor}
-                  class="cursor-pointer ant-icon"
-                />
-              </div>
-            </>
-          )
-        }
-      }
-    }
   }
 ])
-
-const iconSize = 30
 
 const remember = ref(userStore.getRememberMe)
 
@@ -196,10 +135,6 @@ const { formRegister, formMethods } = useForm()
 const { getFormData, getElFormExpose, setValues } = formMethods
 
 const loading = ref(false)
-
-const iconColor = '#999'
-
-const hoverColor = 'var(--el-color-primary)'
 
 const redirect = ref<string>('')
 
@@ -221,22 +156,25 @@ const signIn = async () => {
       loading.value = true
       const formData = await getFormData<UserLoginType>()
 
-      console.log('formData', formData)
       try {
-        const res = await request.post({ url: '/api/v1/user/login', data: formData })
+        const res = await loginApi(formData)
 
         if (res) {
           // 是否记住我
           if (unref(remember)) {
             userStore.setLoginInfo({
               passport: formData.passport,
-              password: formData.password
+              password: ''
             })
           } else {
             userStore.setLoginInfo(undefined)
           }
+          const data = res.data
           userStore.setRememberMe(unref(remember))
-          userStore.setUserInfo(res.data)
+          userStore.setAccessToken(data.accessToken)
+          userStore.setRefreshToken(data.refreshToken)
+          const userInfoRes = await getUserInfoApi()
+          userStore.setUserInfo(userInfoRes.data)
           // 是否使用动态路由
           if (appStore.getDynamicRouter) {
             getRole()
@@ -258,27 +196,12 @@ const signIn = async () => {
 
 // 获取角色信息
 const getRole = async () => {
-  const formData = await getFormData<UserType>()
-  const params = {
-    roleName: formData.roles
-  }
-  const res =
-    appStore.getDynamicRouter && appStore.getServerDynamicRouter
-      ? await getAdminRoleApi(params)
-      : await getTestRoleApi(params)
-  if (res) {
-    const routers = res.data || []
-    userStore.setRoleRouters(routers)
-    appStore.getDynamicRouter && appStore.getServerDynamicRouter
-      ? await permissionStore.generateRoutes('server', routers).catch(() => {})
-      : await permissionStore.generateRoutes('frontEnd', routers).catch(() => {})
-
-    permissionStore.getAddRouters.forEach((route) => {
-      addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
-    })
-    permissionStore.setIsAddRouters(true)
-    push({ path: redirect.value || permissionStore.addRouters[0].path })
-  }
+  await permissionStore.generateRoutes('frontEnd', userStore.getUserInfo?.roles).catch(() => {})
+  permissionStore.getAddRouters.forEach((route) => {
+    addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
+  })
+  permissionStore.setIsAddRouters(true)
+  push({ path: redirect.value || permissionStore.addRouters[0].path })
 }
 
 // 去注册页面
@@ -292,7 +215,7 @@ const toRegister = () => {
     :schema="schema"
     :rules="rules"
     label-position="top"
-    hide-required-asterisk
+    :hide-required-asterisk="true"
     size="large"
     class="dark:(border-1 border-[var(--el-border-color)] border-solid)"
     @register="formRegister"
