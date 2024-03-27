@@ -28,12 +28,12 @@ router.beforeEach(async (to, from, next) => {
       }
 
       // 开发者可根据实际情况进行修改
-      const roleRouters = userStore.getRoleRouters || []
+      const roleRouters = userStore.getUserInfo?.roles || []
 
       // 是否使用动态路由
       if (appStore.getDynamicRouter) {
         appStore.serverDynamicRouter
-          ? await permissionStore.generateRoutes('server', roleRouters as AppCustomRouteRecordRaw[])
+          ? await permissionStore.generateRoutes('server', roleRouters)
           : await permissionStore.generateRoutes('frontEnd', roleRouters as string[])
       } else {
         await permissionStore.generateRoutes('static')

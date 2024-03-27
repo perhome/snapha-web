@@ -145,82 +145,82 @@ watch(
 <template>
   <div :class="prefixCls">
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.breadcrumb') }}</span>
+      <span class="text-14px">顶部导航</span>
       <ElSwitch v-model="breadcrumb" @change="breadcrumbChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.breadcrumbIcon') }}</span>
+      <span class="text-14px">顶部导航图标</span>
       <ElSwitch v-model="breadcrumbIcon" @change="breadcrumbIconChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.hamburgerIcon') }}</span>
+      <span class="text-14px">折叠图标</span>
       <ElSwitch v-model="hamburger" @change="hamburgerChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.screenfullIcon') }}</span>
+      <span class="text-14px">全屏图标</span>
       <ElSwitch v-model="screenfull" @change="screenfullChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.sizeIcon') }}</span>
+      <span class="text-14px">尺寸图标</span>
       <ElSwitch v-model="size" @change="sizeChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.localeIcon') }}</span>
+      <span class="text-14px">多语言图标</span>
       <ElSwitch v-model="locale" @change="localeChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.tagsView') }}</span>
+      <span class="text-14px">标签页</span>
       <ElSwitch v-model="tagsView" @change="tagsViewChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.tagsViewIcon') }}</span>
+      <span class="text-14px">标签页图标</span>
       <ElSwitch v-model="tagsViewIcon" @change="tagsViewIconChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.logo') }}</span>
+      <span class="text-14px">Logo</span>
       <ElSwitch v-model="logo" @change="logoChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.uniqueOpened') }}</span>
+      <span class="text-14px">菜单手风琴</span>
       <ElSwitch v-model="uniqueOpened" @change="uniqueOpenedChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.fixedHeader') }}</span>
+      <span class="text-14px">固定头部</span>
       <ElSwitch v-model="fixedHeader" @change="fixedHeaderChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.footer') }}</span>
+      <span class="text-14px">页脚</span>
       <ElSwitch v-model="footer" @change="footerChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.greyMode') }}</span>
+      <span class="text-14px">灰色模式</span>
       <ElSwitch v-model="greyMode" @change="greyModeChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.dynamicRouter') }}</span>
+      <span class="text-14px">开启动态路由</span>
       <ElSwitch v-model="dynamicRouter" @change="dynamicRouterChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.serverDynamicRouter') }}</span>
+      <span class="text-14px">服务端动态路由</span>
       <ElSwitch v-model="serverDynamicRouter" @change="serverDynamicRouterChange" />
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.fixedMenu') }}</span>
+      <span class="text-14px">固定菜单</span>
       <ElSwitch v-model="fixedMenu" @change="fixedMenuChange" />
     </div>
   </div>

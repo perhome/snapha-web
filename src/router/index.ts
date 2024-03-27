@@ -6,6 +6,11 @@ import { Layout } from '@/utils/routerHelper'
 
 import { NO_RESET_WHITE_LIST } from '@/constants'
 import { farmlandRouter } from '@/router/farmland'
+import { livestockRouter } from '@/router/livestock'
+import { goodsRouter } from '@/router/goods'
+import { warehouseRouter } from '@/router/warehouse'
+import { systemRouter } from '@/router/system'
+import { iotRouter } from '@/router/iot'
 
 export const constantRouterMap: AppRouteRecordRaw[] = [
   {
@@ -112,7 +117,12 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
       }
     ]
   },
-  farmlandRouter
+  farmlandRouter,
+  livestockRouter,
+  goodsRouter,
+  warehouseRouter,
+  iotRouter,
+  systemRouter
 ]
 
 const router = createRouter({

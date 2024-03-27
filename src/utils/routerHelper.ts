@@ -54,11 +54,7 @@ export const generateRoutesByFrontEnd = (
 
     let data: Nullable<AppRouteRecordRaw> = null
 
-    if (meta.role) {
-      if (meta.role.some((el) => keys.includes(el))) {
-        data = Object.assign({}, route)
-      }
-    } else {
+    if (!meta.role || meta.role.some((el) => keys.includes(el))) {
       data = Object.assign({}, route)
     }
 

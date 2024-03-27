@@ -7,8 +7,11 @@ import LockPage from './components/LockPage.vue'
 import { useLockStore } from '@/store/modules/lock'
 import { useUserStore } from '@/store/modules/user'
 import { useRouter } from 'vue-router'
+import { useAppStore } from '@/store/modules/app'
 
 const { push } = useRouter()
+
+const appStore = useAppStore()
 
 const userStore = useUserStore()
 
@@ -29,6 +32,10 @@ const dialogVisible = ref<boolean>(false)
 // 锁定屏幕
 const lockScreen = () => {
   dialogVisible.value = true
+}
+
+const showSetting = () => {
+  appStore.setShowSetting(true)
 }
 
 const toDocument = () => {
@@ -56,6 +63,9 @@ const toPage = (path: string) => {
       <ElDropdownMenu>
         <ElDropdownItem>
           <div @click="toPage('/personal/personal-center')"> 个人中心 </div>
+        </ElDropdownItem>
+        <ElDropdownItem>
+          <div @click="showSetting"> 系统设置 </div>
         </ElDropdownItem>
         <ElDropdownItem>
           <div @click="toDocument"> 帮助文档 </div>

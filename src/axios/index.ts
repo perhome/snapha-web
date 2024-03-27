@@ -36,7 +36,7 @@ axiosInstance.interceptors.request.use((res: InternalAxiosRequestConfig) => {
 axiosInstance.interceptors.response.use(
   (res) => res,
   (error: AxiosError) => {
-    if (error.response && (error.response.status === 401 || error.response.status == 500)) {
+    if (error.response && error.response.status === 401) {
       if (!('data' in error.response)) {
         return Promise.reject(error)
       }

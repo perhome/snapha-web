@@ -55,6 +55,12 @@ declare global {
     data: T extends any ? T : T & any
   }
 
+  declare interface PageRecords<T = any> {
+    pageNumber: number
+    pageSize: number
+    records: T[] extends any ? T[] : T[] & any
+  }
+
   declare interface ThemeTypes {
     elColorPrimary?: string
     leftMenuBorderColor?: string

@@ -5,9 +5,9 @@ export const farmlandRouter: AppRouteRecordRaw = {
   component: Layout,
   name: 'FarmLand',
   meta: {
-    title: '农田管理',
+    title: '种植',
     icon: 'ant-design:dashboard-filled',
-    role: ['MANAGER']
+    role: ['ADMIN', 'FARMLAND']
   },
   children: [
     {
@@ -15,24 +15,41 @@ export const farmlandRouter: AppRouteRecordRaw = {
       name: 'FarmLandIndex',
       component: () => import('@/views/empty.vue'),
       meta: {
-        title: '农田区块'
+        title: '作业区块'
       }
     },
     {
       path: 'cfr-workspace',
-      name: 'FarmLandCFRWorkspace',
+      name: 'FarmLandCfrWorkspace',
       component: () => import('@/views/empty.vue'),
       meta: {
         title: '茬口轮作'
       }
     },
     {
-      path: 'cfr-product/yield',
-      name: 'FarmlandCfrProductYield',
+      path: 'cfr-workspace/task',
+      name: 'FarmLandCfrWorkspaceTask',
+      component: () => import('@/views/empty.vue'),
+      meta: {
+        title: '派工单'
+      }
+    },
+    {
+      path: 'cfr-workspace/yield',
+      name: 'FarmlandCfrWorkspaceYield',
       component: () => import('@/views/empty.vue'),
       meta: {
         breadcrumb: true,
-        title: '下菜单记录'
+        title: '下菜单'
+      }
+    },
+    {
+      path: 'cfr-workspace/yield-nextday',
+      name: 'FarmlandCfrWorkspaceYieldNextDay',
+      component: () => import('@/views/empty.vue'),
+      meta: {
+        breadcrumb: true,
+        title: '预估菜'
       }
     }
   ]

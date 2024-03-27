@@ -11,6 +11,7 @@ import { useDark } from '@vueuse/core'
 // const { getStorage, setStorage } = useStorage('localStorage')
 
 interface AppState {
+  showSetting: boolean
   breadcrumb: boolean
   breadcrumbIcon: boolean
   collapse: boolean
@@ -41,6 +42,7 @@ interface AppState {
 export const useAppStore = defineStore('app', {
   state: (): AppState => {
     return {
+      showSetting: false,
       sizeMap: ['default', 'large', 'small'],
       mobile: false, // 是否是移动端
       title: import.meta.env.VITE_APP_TITLE, // 标题
@@ -59,7 +61,7 @@ export const useAppStore = defineStore('app', {
       fixedHeader: true, // 固定toolheader
       footer: true, // 显示页脚
       greyMode: false, // 是否开始灰色模式，用于特殊悼念日
-      dynamicRouter: false, // 是否动态路由
+      dynamicRouter: true, // 是否动态路由
       serverDynamicRouter: false, // 是否服务端渲染动态路由
       fixedMenu: false, // 是否固定菜单
 
@@ -99,6 +101,9 @@ export const useAppStore = defineStore('app', {
     }
   },
   getters: {
+    getShowSetting(): boolean {
+      return this.showSetting
+    },
     getBreadcrumb(): boolean {
       return this.breadcrumb
     },
@@ -176,6 +181,9 @@ export const useAppStore = defineStore('app', {
     }
   },
   actions: {
+    setShowSetting(showSetting: boolean) {
+      this.showSetting = showSetting
+    },
     setBreadcrumb(breadcrumb: boolean) {
       this.breadcrumb = breadcrumb
     },

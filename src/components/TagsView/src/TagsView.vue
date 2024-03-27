@@ -284,7 +284,7 @@ watch(
             :schema="[
               {
                 icon: 'ant-design:sync-outlined',
-                label: t('common.reload'),
+                label: '刷新',
                 disabled: selectedTag?.fullPath !== item.fullPath,
                 command: () => {
                   refreshSelectedTag(item)
@@ -292,7 +292,7 @@ watch(
               },
               {
                 icon: 'ant-design:close-outlined',
-                label: t('common.closeTab'),
+                label: '关闭',
                 disabled: !!visitedViews?.length && selectedTag?.meta.affix,
                 command: () => {
                   closeSelectedTag(item)
@@ -301,7 +301,7 @@ watch(
               {
                 divided: true,
                 icon: 'ant-design:vertical-right-outlined',
-                label: t('common.closeTheLeftTab'),
+                label: '关闭左侧所有',
                 disabled:
                   !!visitedViews?.length &&
                   (item.fullPath === visitedViews[0].fullPath ||
@@ -312,7 +312,7 @@ watch(
               },
               {
                 icon: 'ant-design:vertical-left-outlined',
-                label: t('common.closeTheRightTab'),
+                label: '关闭右侧所有',
                 disabled:
                   !!visitedViews?.length &&
                   (item.fullPath === visitedViews[visitedViews.length - 1].fullPath ||
@@ -324,7 +324,7 @@ watch(
               {
                 divided: true,
                 icon: 'ant-design:tag-outlined',
-                label: t('common.closeOther'),
+                label: '关闭其它',
                 disabled: selectedTag?.fullPath !== item.fullPath,
                 command: () => {
                   closeOthersTags()
@@ -332,7 +332,7 @@ watch(
               },
               {
                 icon: 'ant-design:line-outlined',
-                label: t('common.closeAll'),
+                label: '关闭所有',
                 command: () => {
                   closeAllTags()
                 }
@@ -409,14 +409,14 @@ watch(
       :schema="[
         {
           icon: 'ant-design:sync-outlined',
-          label: t('common.reload'),
+          label: '刷新',
           command: () => {
             refreshSelectedTag(selectedTag)
           }
         },
         {
           icon: 'ant-design:close-outlined',
-          label: t('common.closeTab'),
+          label: '关闭当前标签',
           disabled: !!visitedViews?.length && selectedTag?.meta.affix,
           command: () => {
             closeSelectedTag(selectedTag!)
@@ -425,7 +425,7 @@ watch(
         {
           divided: true,
           icon: 'ant-design:vertical-right-outlined',
-          label: t('common.closeTheLeftTab'),
+          label: '关闭左侧所有',
           disabled: !!visitedViews?.length && selectedTag?.fullPath === visitedViews[0].fullPath,
           command: () => {
             closeLeftTags()
@@ -433,7 +433,7 @@ watch(
         },
         {
           icon: 'ant-design:vertical-left-outlined',
-          label: t('common.closeTheRightTab'),
+          label: '关闭右侧所有',
           disabled:
             !!visitedViews?.length &&
             selectedTag?.fullPath === visitedViews[visitedViews.length - 1].fullPath,
@@ -444,14 +444,14 @@ watch(
         {
           divided: true,
           icon: 'ant-design:tag-outlined',
-          label: t('common.closeOther'),
+          label: '关闭其它',
           command: () => {
             closeOthersTags()
           }
         },
         {
           icon: 'ant-design:line-outlined',
-          label: t('common.closeAll'),
+          label: '关闭所有',
           command: () => {
             closeAllTags()
           }
