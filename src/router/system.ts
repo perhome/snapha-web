@@ -81,6 +81,33 @@ export const systemRouter: AppRouteRecordRaw = {
           }
         }
       ]
+    },
+    {
+      path: 'product',
+      name: 'SystemProduct',
+      component: () => getParentLayout(),
+      redirect: '/system/product/index',
+      meta: {
+        title: '产品'
+      },
+      children: [
+        {
+          path: 'index',
+          name: 'SystemProductIndex',
+          component: () => import('@/views/system/product/index.vue'),
+          meta: {
+            title: '产品'
+          }
+        },
+        {
+          path: 'category',
+          name: 'SystemProductCategory',
+          component: () => import('@/views/system/product/category.vue'),
+          meta: {
+            title: '类别'
+          }
+        }
+      ]
     }
   ]
 }

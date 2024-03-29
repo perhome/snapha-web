@@ -58,7 +58,8 @@ export enum ComponentNameEnum {
   UPLOAD = 'Upload',
   JSON_EDITOR = 'JsonEditor',
   ICON_PICKER = 'IconPicker',
-  I_AGREE = 'IAgree'
+  I_AGREE = 'IAgree',
+  PRODUCT_CATEGORY = 'ProductCategorySelection'
 }
 
 type CamelCaseComponentName = keyof typeof ComponentNameEnum extends infer K

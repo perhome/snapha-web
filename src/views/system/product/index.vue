@@ -1,8 +1,8 @@
 <script setup lang="tsx">
-import { h, reactive, ref, unref, watch } from 'vue'
-import { ElMessage, ElDivider, ElPopconfirm, ElSpace, ElTag } from 'element-plus'
+import { reactive, ref, unref, watch } from 'vue'
+import { ElMessage, ElDivider, ElPopconfirm } from 'element-plus'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
-import { Table, TableColumn } from '@/components/Table'
+import { Table } from '@/components/Table'
 import { Dialog } from '@/components/Dialog'
 import { Search } from '@/components/Search'
 import { FormSchema } from '@/components/Form'
@@ -10,14 +10,11 @@ import Write from '@/views/Components/Dialog/Write.vue'
 import request from '@/axios'
 import { ContentWrap } from '@/components/ContentWrap'
 import { BaseButton } from '@/components/Button'
-import { useRouter } from 'vue-router'
 import { actionDict } from '@/constants/dict'
 
 defineOptions({
-  name: 'SystemUserIndex'
+  name: 'SystemProductIndex'
 })
-
-const { push } = useRouter()
 
 const queryForm = reactive<{
   pageSize: number
@@ -26,21 +23,22 @@ const queryForm = reactive<{
   pageSize: 10,
   currentPage: 1
 })
-const moduleText = '用户'
+const moduleText = '产品'
 const dialogVisible = ref(false)
 const searchVisible = ref(false)
 const dialogTitle = ref(moduleText)
 
 const actionType = ref('')
-const userEntity = {
-  uid: null,
+const productEntity = {
+  pid: null,
   name: null,
-  usn: null,
-  departmentId: null
+  psd: null,
+  parentPid: null,
+  categoryId: null
 }
 const crudSchemas = reactive<CrudSchema[]>([
   {
-    field: 'uid',
+    field: 'pid',
     label: 'ID',
     form: {
       hidden: true
@@ -48,14 +46,24 @@ const crudSchemas = reactive<CrudSchema[]>([
   },
   {
     field: 'name',
-    label: '姓名',
+    label: '名称',
     search: {
       hidden: false
     }
   },
   {
-    field: 'usn',
+    field: 'psn',
     label: '编号'
+  },
+  {
+    field: 'categoryId',
+    label: '分类',
+    hidden: true,
+    form: { component: 'ProductCategory', hidden: false },
+    search: {
+      component: 'ProductCategory',
+      hidden: false
+    }
   },
   {
     field: 'created',
@@ -65,19 +73,6 @@ const crudSchemas = reactive<CrudSchema[]>([
     },
     form: {
       hidden: true
-    }
-  },
-  {
-    field: 'roles',
-    label: '角色',
-    search: {
-      hidden: true
-    },
-    form: {
-      hidden: true
-    },
-    formatter: (_: Recordable, __: TableColumn, cellValue: string[]) => {
-      return h(ElSpace, () => cellValue.map((item) => h(ElTag, { type: 'success' }, () => item)))
     }
   },
   {
@@ -103,7 +98,7 @@ const crudSchemas = reactive<CrudSchema[]>([
               </BaseButton>
               <ElPopconfirm
                 title="确认禁用？"
-                onConfirm={() => handleDisable(data.row)}
+                onConfirm={() => handleSoftDelete(data.row)}
                 v-slots={{
                   reference: () => <BaseButton type="warning">禁用</BaseButton>
                 }}
@@ -138,88 +133,87 @@ const tableData = reactive<{
   list: [],
   total: 0
 })
-const getUserList = async () => {
+const getProductList = async () => {
   tableData.loading = true
-  const res = await request.get({ url: 'api/v1/user', params: queryForm })
-  if (!res) return
+  const res = await request.get({ url: 'api/v1/product', params: queryForm })
   tableData.loading = false
   tableData.total = Number(res.data.totalRow)
   tableData.list = res.data.records
 }
 
-const temp = reactive({ ...userEntity })
+const temp = reactive({ ...productEntity })
 const rules = ref({
   name: [{ required: true, message: '不能未空！', trigger: 'blur' }]
 })
 const setSearchParams = (data: Recordable) => {
   queryForm.currentPage = 1
-  Object.assign(queryForm, Object.keys(data).length > 0 ? data : userEntity)
-  getUserList()
+  Object.assign(queryForm, Object.keys(data).length > 0 ? data : productEntity)
+  getProductList()
 }
 
 const handleCreate = () => {
-  push('/system/user/create')
+  dialogVisible.value = true
+  actionType.value = 'create'
+  Object.assign(temp, productEntity)
 }
+
 const handleUpdate = (row) => {
   dialogVisible.value = true
   actionType.value = 'update'
   Object.assign(temp, row)
 }
 
-const handleDisable = async (row: any) => {
+const handleSoftDelete = async (row: any) => {
   const res = await request.put({
-    url: 'api/v1/user/' + row.uid,
+    url: 'api/v1/user/' + row.pid,
     data: { deleted: 1 }
   })
   if (res) {
     ElMessage.success('操作成功！')
-    await getUserList()
+    await getProductList()
   }
 }
+
+const handleDelete = async (row) => {
+  const res = await request.delete({ url: 'api/v1/product/' + row.pid })
+  if (res) {
+    await getProductList()
+    ElMessage.success('删除成功！')
+  }
+}
+
 const writeRef = ref<ComponentRef<typeof Write>>()
 const createData = async () => {
   const writer = unref(writeRef)
   const formData = await writer?.submit()
   if (formData) {
     let res: any
-    if (formData.uid) {
-      res = await request.put({ url: 'api/v1/user/' + formData.uid, data: formData })
+    if (formData.pid) {
+      res = await request.put({ url: 'api/v1/product/' + formData.pid, data: formData })
     } else {
-      res = await request.post({ url: 'api/v1/user', data: formData })
+      res = await request.post({ url: 'api/v1/product', data: formData })
     }
     if (res) {
       dialogVisible.value = false
       ElMessage.success('保存成功！')
-      await getUserList()
+      await getProductList()
     }
   }
 }
 
-const handleDelete = async (row) => {
-  const res = await request.delete({ url: 'api/v1/user/' + row.uid })
-  if (res) {
-    await getUserList()
-    ElMessage.success('删除成功！')
-  }
-}
 watch(actionType, (val) => {
   dialogTitle.value = actionDict[val] + moduleText
 })
 watch([() => queryForm.pageSize, () => queryForm.currentPage], () => {
-  getUserList()
+  getProductList()
 })
-
-const init = () => {
-  getUserList()
-}
-
-init()
+getProductList()
 </script>
 
 <template>
   <content-wrap>
     <BaseButton type="primary" @click="searchVisible = !searchVisible">检索</BaseButton>
-    <BaseButton type="primary" @click="getUserList">刷新</BaseButton>
+    <BaseButton type="primary" @click="getProductList">刷新</BaseButton>
     <BaseButton type="success" @click="handleCreate">新建</BaseButton>
     <el-divider />
     <Search
