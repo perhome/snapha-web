@@ -302,7 +302,7 @@ const createData = async () => {
   const writer = unref(writeRef)
   const formData = await writer?.submit()
   if (formData) {
-    let res
+    let res: any
     if (formData.wid) {
       res = await request.put({ url: 'api/v1/workspace/' + formData.wid, data: formData })
     } else {
@@ -360,6 +360,7 @@ init()
       <content-wrap>
         <el-tree
           default-expand-all
+          :expand-on-click-node="false"
           :data="structTreeData"
           :props="structTreeProps"
           @node-click="handleNodeClick"

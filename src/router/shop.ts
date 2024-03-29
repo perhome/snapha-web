@@ -1,27 +1,27 @@
 import { Layout } from '@/utils/routerHelper'
 
-export const iotRouter: AppRouteRecordRaw = {
-  path: '/iot',
+export const shopRouter: AppRouteRecordRaw = {
+  path: '/shop',
   component: Layout,
-  redirect: '/iot/index',
-  name: 'Iot',
+  redirect: '/shop/index',
+  name: 'Shop',
   meta: {
-    title: '物联网',
+    title: '销售',
     icon: 'ic:sharp-warehouse',
     role: ['ADMIN', 'MANAGER']
   },
   children: [
     {
-      path: 'index',
+      path: 'goods',
       component: () => import('@/views/empty.vue'),
-      name: 'IotIndex',
-      meta: { title: '数据源' }
+      name: 'ShopGoods',
+      meta: { title: '在售' }
     },
     {
       path: 'data',
-      name: 'IotData',
+      name: 'ShopOrder',
       component: () => import('@/views/empty.vue'),
-      meta: { title: '数据历史' }
+      meta: { title: '已售' }
     }
   ]
 }

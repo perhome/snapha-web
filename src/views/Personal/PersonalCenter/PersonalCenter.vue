@@ -7,20 +7,14 @@ import UploadAvatar from './components/UploadAvatar.vue'
 import { Dialog } from '@/components/Dialog'
 import EditInfo from './components/EditInfo.vue'
 import EditPassword from './components/EditPassword.vue'
+import request from '@/axios'
 
 const userInfo = ref()
 const fetchDetailUserApi = async () => {
-  // 这里可以调用接口获取用户信息
-  const data = {
-    id: 1,
-    username: 'admin',
-    realName: 'admin',
-    phoneNumber: '18888888888',
-    email: '502431556@qq.com',
-    avatarUrl: '',
-    roleList: ['超级管理员']
+  const res = await request.get({ url: 'api/v1/user/info' })
+  if (res) {
+    userInfo.value = res.data
   }
-  userInfo.value = data
 }
 fetchDetailUserApi()
 
@@ -65,22 +59,17 @@ const saveAvatar = async () => {
       <ElDivider />
       <div class="flex justify-between items-center">
         <div>账号：</div>
-        <div>{{ userInfo?.username }}</div>
+        <div>{{ userInfo?.usn }}</div>
       </div>
       <ElDivider />
       <div class="flex justify-between items-center">
         <div>昵称：</div>
-        <div>{{ userInfo?.realName }}</div>
+        <div>{{ userInfo?.name }}</div>
       </div>
       <ElDivider />
       <div class="flex justify-between items-center">
         <div>手机号码：</div>
-        <div>{{ userInfo?.phoneNumber ?? '-' }}</div>
-      </div>
-      <ElDivider />
-      <div class="flex justify-between items-center">
-        <div>用户邮箱：</div>
-        <div>{{ userInfo?.email ?? '-' }}</div>
+        <div>{{ userInfo?.phone ?? '-' }}</div>
       </div>
       <ElDivider />
       <div class="flex justify-between items-center">

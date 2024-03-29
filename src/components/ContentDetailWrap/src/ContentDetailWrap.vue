@@ -20,6 +20,7 @@ defineProps({
         <slot name="header"></slot>
       </div>
       <slot></slot>
+      <slot name="footer"></slot>
     </ElCard>
   </div>
 </template>

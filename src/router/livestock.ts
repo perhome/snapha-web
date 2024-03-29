@@ -34,6 +34,23 @@ export const livestockRouter: AppRouteRecordRaw = {
         breadcrumb: true,
         title: '出入记录'
       }
+    },
+    {
+      path: 'feeding',
+      name: 'LivestockFeeding',
+      component: () => import('@/views/empty.vue'),
+      meta: {
+        breadcrumb: true,
+        title: '饲喂'
+      }
+    },
+    {
+      path: 'event-type',
+      name: 'LivestockEventType',
+      component: () => import('@/views/empty.vue'),
+      meta: {
+        title: '出入事件'
+      }
     }
   ]
 }

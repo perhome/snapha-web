@@ -27,8 +27,8 @@ export const farmlandRouter: AppRouteRecordRaw = {
       }
     },
     {
-      path: 'cfr-workspace/task',
-      name: 'FarmLandCfrWorkspaceTask',
+      path: 'cfr-task',
+      name: 'FarmLandCfrTask',
       component: () => import('@/views/empty.vue'),
       meta: {
         title: '派工单'
@@ -50,6 +50,14 @@ export const farmlandRouter: AppRouteRecordRaw = {
       meta: {
         breadcrumb: true,
         title: '预估菜'
+      }
+    },
+    {
+      path: 'workstage',
+      name: 'FarmLandWorkstage',
+      component: () => import('@/views/empty.vue'),
+      meta: {
+        title: '工序'
       }
     }
   ]

@@ -13,9 +13,9 @@ export const systemRouter: AppRouteRecordRaw = {
     {
       path: 'index',
       name: 'SystemIndex',
-      component: () => import('@/views/empty.vue'),
+      component: () => import('@/views/system/index.vue'),
       meta: {
-        title: '模块设置'
+        title: '全局设置'
       }
     },
     {
@@ -35,9 +35,18 @@ export const systemRouter: AppRouteRecordRaw = {
       }
     },
     {
+      path: 'log',
+      name: 'SystemLog',
+      component: () => import('@/views/empty.vue'),
+      meta: {
+        title: '操作日志'
+      }
+    },
+    {
       path: 'user',
       name: 'SystemUser',
       component: () => getParentLayout(),
+      redirect: '/system/user/index',
       meta: {
         title: '用户'
       },
@@ -45,15 +54,28 @@ export const systemRouter: AppRouteRecordRaw = {
         {
           path: 'index',
           name: 'SystemUserIndex',
-          component: () => import('@/views/empty.vue'),
+          component: () => import('@/views/system/user/index.vue'),
           meta: {
-            title: '列表'
+            title: '员工'
+          }
+        },
+        {
+          path: 'create',
+          name: 'SystemUserCreate',
+          component: () => import('@/views/system/user/create.vue'),
+          meta: {
+            title: '新建用户',
+            noTagsView: true,
+            noCache: true,
+            hidden: true,
+            canTo: true,
+            activeMenu: '/system/user/index'
           }
         },
         {
           path: 'group',
           name: 'SystemUserGroup',
-          component: () => import('@/views/empty.vue'),
+          component: () => import('@/views/system/user/group.vue'),
           meta: {
             title: '组别'
           }

@@ -32,8 +32,8 @@ const formSchema = reactive<FormSchema[]>([
     }
   },
   {
-    field: 'email',
-    label: '邮箱',
+    field: 'name',
+    label: '姓名',
     component: 'Input',
     colProps: {
       span: 24

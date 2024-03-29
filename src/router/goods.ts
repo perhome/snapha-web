@@ -7,7 +7,7 @@ export const goodsRouter: AppRouteRecordRaw = {
   name: 'Goods',
   meta: {
     title: '物资',
-    role: ['MANAGER'],
+    role: ['ADMIN', 'MANAGER'],
     icon: 'carbon:skill-level-advanced'
   },
   children: [

@@ -11,6 +11,7 @@ import { goodsRouter } from '@/router/goods'
 import { warehouseRouter } from '@/router/warehouse'
 import { systemRouter } from '@/router/system'
 import { iotRouter } from '@/router/iot'
+import { shopRouter } from '@/router/shop'
 
 export const constantRouterMap: AppRouteRecordRaw[] = [
   {
@@ -120,6 +121,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
   farmlandRouter,
   livestockRouter,
   goodsRouter,
+  shopRouter,
   warehouseRouter,
   iotRouter,
   systemRouter
