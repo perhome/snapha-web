@@ -13,7 +13,7 @@ import { BaseButton } from '@/components/Button'
 import { actionDict } from '@/constants/dict'
 
 defineOptions({
-  name: 'SystemProductIndex'
+  name: 'SystemGoodsIndex'
 })
 
 const queryForm = reactive<{
@@ -23,22 +23,24 @@ const queryForm = reactive<{
   pageSize: 10,
   currentPage: 1
 })
-const moduleText = '产品'
+const moduleText = '物料'
 const dialogVisible = ref(false)
 const searchVisible = ref(false)
 const dialogTitle = ref(moduleText)
 
 const actionType = ref('')
-const productEntity = {
-  pid: null,
+const goodsEntity = {
+  gid: null,
   name: null,
-  psn: null,
-  parentPid: null,
-  categoryId: null
+  gsn: null,
+  goodsCategoryId: null,
+  unitId: null,
+  nameAbbr: null,
+  useUnit: null
 }
 const crudSchemas = reactive<CrudSchema[]>([
   {
-    field: 'pid',
+    field: 'gid',
     label: 'ID',
     form: {
       hidden: true
@@ -52,22 +54,26 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'psn',
+    field: 'gsn',
     label: '编号'
   },
   {
-    field: 'categoryId',
+    field: 'nameAbbr',
+    label: '简拼'
+  },
+  {
+    field: 'goodsCategoryId',
     label: '分类',
     hidden: true,
-    form: { component: 'ProductCategory', hidden: false },
+    form: { component: 'GoodsCategory', hidden: false },
     search: {
-      component: 'ProductCategory',
+      component: 'GoodsCategory',
       hidden: false
     }
   },
   {
     field: 'unitId',
-    label: '单位',
+    label: '默认单位',
     hidden: true,
     form: { component: 'Unit', hidden: false },
     search: {
@@ -75,12 +81,11 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'created',
-    label: '创建日期',
+    field: 'useUnit',
+    label: '可用单位',
+    hidden: true,
+    form: { component: 'Unit', hidden: false, componentProps: { multiple: true } },
     search: {
-      hidden: true
-    },
-    form: {
       hidden: true
     }
   },
@@ -143,28 +148,28 @@ const tableData = reactive<{
   total: 0
 })
 
-const getProductList = async () => {
+const getGoodsList = async () => {
   tableData.loading = true
-  const res = await request.get({ url: 'api/v1/product', params: queryForm })
+  const res = await request.get({ url: 'api/v1/goods', params: queryForm })
   tableData.loading = false
   tableData.total = Number(res.data.totalRow)
   tableData.list = res.data.records
 }
 
-const temp = reactive({ ...productEntity })
+const temp = reactive({ ...goodsEntity })
 const rules = ref({
   name: [{ required: true, message: '不能未空！', trigger: 'blur' }]
 })
 const setSearchParams = (data: Recordable) => {
   queryForm.currentPage = 1
-  Object.assign(queryForm, Object.keys(data).length > 0 ? data : productEntity)
-  getProductList()
+  Object.assign(queryForm, Object.keys(data).length > 0 ? data : goodsEntity)
+  getGoodsList()
 }
 
 const handleCreate = () => {
   dialogVisible.value = true
   actionType.value = 'create'
-  Object.assign(temp, productEntity)
+  Object.assign(temp, goodsEntity)
 }
 
 const handleUpdate = (row) => {
@@ -175,19 +180,19 @@ const handleUpdate = (row) => {
 
 const handleSoftDelete = async (row: any) => {
   const res = await request.put({
-    url: 'api/v1/product/' + row.pid,
+    url: 'api/v1/goods/' + row.gid,
     data: { deleted: 1 }
   })
   if (res) {
     ElMessage.success('操作成功！')
-    await getProductList()
+    await getGoodsList()
   }
 }
 
 const handleDelete = async (row: any) => {
-  const res = await request.delete({ url: 'api/v1/product/' + row.pid })
+  const res = await request.delete({ url: 'api/v1/goods/' + row.gid })
   if (res) {
-    await getProductList()
+    await getGoodsList()
     ElMessage.success('删除成功！')
   }
 }
@@ -198,15 +203,15 @@ const createData = async () => {
   const formData = await writer?.submit()
   if (formData) {
     let res: any
-    if (formData.pid) {
-      res = await request.put({ url: 'api/v1/product/' + formData.pid, data: formData })
+    if (formData.gid) {
+      res = await request.put({ url: 'api/v1/goods/' + formData.gid, data: formData })
     } else {
-      res = await request.post({ url: 'api/v1/product', data: formData })
+      res = await request.post({ url: 'api/v1/goods', data: formData })
     }
     if (res) {
       dialogVisible.value = false
       ElMessage.success('保存成功！')
-      await getProductList()
+      await getGoodsList()
     }
   }
 }
@@ -216,16 +221,16 @@ watch(actionType, (val) => {
 })
 
 watch([() => queryForm.pageSize, () => queryForm.currentPage], () => {
-  getProductList()
+  getGoodsList()
 })
 
-getProductList()
+getGoodsList()
 </script>
 
 <template>
   <content-wrap>
     <BaseButton type="primary" @click="searchVisible = !searchVisible">检索</BaseButton>
-    <BaseButton type="primary" @click="getProductList">刷新</BaseButton>
+    <BaseButton type="primary" @click="getGoodsList">刷新</BaseButton>
     <BaseButton type="success" @click="handleCreate">新建</BaseButton>
     <el-divider />
     <Search

@@ -11,34 +11,35 @@ import request from '@/axios'
 import { ContentWrap } from '@/components/ContentWrap'
 import { BaseButton } from '@/components/Button'
 import { actionDict } from '@/constants/dict'
+import { useRouter } from 'vue-router'
 
 defineOptions({
-  name: 'SystemProductIndex'
+  name: 'SystemUnit'
 })
 
+const { go } = useRouter()
 const queryForm = reactive<{
   pageSize: number
   currentPage: number
 }>({
-  pageSize: 10,
+  pageSize: 20,
   currentPage: 1
 })
-const moduleText = '产品'
+const moduleText = '单位'
 const dialogVisible = ref(false)
 const searchVisible = ref(false)
 const dialogTitle = ref(moduleText)
 
 const actionType = ref('')
-const productEntity = {
-  pid: null,
+const unitEntity = {
+  uid: null,
   name: null,
-  psn: null,
-  parentPid: null,
-  categoryId: null
+  nameAbbr: null,
+  symbol: null
 }
 const crudSchemas = reactive<CrudSchema[]>([
   {
-    field: 'pid',
+    field: 'uid',
     label: 'ID',
     form: {
       hidden: true
@@ -52,37 +53,14 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'psn',
+    field: 'nameAbbr',
+    label: '简拼',
+    form: { hidden: true },
+    search: { hidden: true }
+  },
+  {
+    field: 'symbol',
     label: '编号'
-  },
-  {
-    field: 'categoryId',
-    label: '分类',
-    hidden: true,
-    form: { component: 'ProductCategory', hidden: false },
-    search: {
-      component: 'ProductCategory',
-      hidden: false
-    }
-  },
-  {
-    field: 'unitId',
-    label: '单位',
-    hidden: true,
-    form: { component: 'Unit', hidden: false },
-    search: {
-      hidden: true
-    }
-  },
-  {
-    field: 'created',
-    label: '创建日期',
-    search: {
-      hidden: true
-    },
-    form: {
-      hidden: true
-    }
   },
   {
     field: 'action',
@@ -145,26 +123,26 @@ const tableData = reactive<{
 
 const getProductList = async () => {
   tableData.loading = true
-  const res = await request.get({ url: 'api/v1/product', params: queryForm })
+  const res = await request.get({ url: 'api/v1/unit', params: queryForm })
   tableData.loading = false
   tableData.total = Number(res.data.totalRow)
   tableData.list = res.data.records
 }
 
-const temp = reactive({ ...productEntity })
+const temp = reactive({ ...unitEntity })
 const rules = ref({
   name: [{ required: true, message: '不能未空！', trigger: 'blur' }]
 })
 const setSearchParams = (data: Recordable) => {
   queryForm.currentPage = 1
-  Object.assign(queryForm, Object.keys(data).length > 0 ? data : productEntity)
+  Object.assign(queryForm, Object.keys(data).length > 0 ? data : unitEntity)
   getProductList()
 }
 
 const handleCreate = () => {
   dialogVisible.value = true
   actionType.value = 'create'
-  Object.assign(temp, productEntity)
+  Object.assign(temp, unitEntity)
 }
 
 const handleUpdate = (row) => {
@@ -175,7 +153,7 @@ const handleUpdate = (row) => {
 
 const handleSoftDelete = async (row: any) => {
   const res = await request.put({
-    url: 'api/v1/product/' + row.pid,
+    url: 'api/v1/unit/' + row.uid,
     data: { deleted: 1 }
   })
   if (res) {
@@ -185,7 +163,7 @@ const handleSoftDelete = async (row: any) => {
 }
 
 const handleDelete = async (row: any) => {
-  const res = await request.delete({ url: 'api/v1/product/' + row.pid })
+  const res = await request.delete({ url: 'api/v1/unit/' + row.uid })
   if (res) {
     await getProductList()
     ElMessage.success('删除成功！')
@@ -198,10 +176,10 @@ const createData = async () => {
   const formData = await writer?.submit()
   if (formData) {
     let res: any
-    if (formData.pid) {
-      res = await request.put({ url: 'api/v1/product/' + formData.pid, data: formData })
+    if (formData.uid) {
+      res = await request.put({ url: 'api/v1/unit/' + formData.uid, data: formData })
     } else {
-      res = await request.post({ url: 'api/v1/product', data: formData })
+      res = await request.post({ url: 'api/v1/unit', data: formData })
     }
     if (res) {
       dialogVisible.value = false
@@ -224,6 +202,7 @@ getProductList()
 
 <template>
   <content-wrap>
+    <BaseButton @click="go(-1)">返回</BaseButton>
     <BaseButton type="primary" @click="searchVisible = !searchVisible">检索</BaseButton>
     <BaseButton type="primary" @click="getProductList">刷新</BaseButton>
     <BaseButton type="success" @click="handleCreate">新建</BaseButton>

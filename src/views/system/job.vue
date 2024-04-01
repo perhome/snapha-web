@@ -11,28 +11,26 @@ import { actionDict } from '@/constants/dict'
 import { useValidator } from '@/hooks/web/useValidator'
 
 defineOptions({
-  name: 'SystemUserGroup'
+  name: 'SystemJob'
 })
 
 const { required } = useValidator()
 
-const moduleText = '用户组'
+const moduleText = '岗位设置'
 
 const dialogVisible = ref(false)
 const dialogTitle = ref(moduleText)
 
 const actionType = ref('')
-const groupEntity = {
-  gid: null,
-  name: null,
-  parentGid: null,
-  category: 'DEFAULT'
+const jobEntity = {
+  jid: null,
+  name: null
 }
 
 const formSchema = reactive<FormSchema[]>([
   {
     field: 'name',
-    label: '组名',
+    label: '名称',
     component: 'Input',
     formItemProps: {
       rules: [required()]
@@ -42,72 +40,56 @@ const formSchema = reactive<FormSchema[]>([
     }
   },
   {
-    field: 'gsn',
+    field: 'jsn',
     label: '编号',
     component: 'Input',
     formItemProps: {},
     colProps: {
       span: 24
     }
-  },
-  {
-    field: 'category',
-    label: '类型',
-    component: 'RadioButton',
-    formItemProps: {},
-    componentProps: {
-      options: [
-        { label: '默认组', value: 'DEFAULT' },
-        { label: '功能组', value: 'FEATURE' }
-      ]
-    },
-    colProps: {
-      span: 24
-    }
   }
 ])
 
-const userGroupData = ref([])
+const jobData = ref([])
 
-const getUserGroupList = async () => {
-  const res = await request.get({ url: 'api/v1/system/user-group/tree' })
-  userGroupData.value = res.data
+const getJobList = async () => {
+  const res = await request.get({ url: 'api/v1/system/job' })
+  jobData.value = res.data
 }
 
-const temp = reactive({ ...groupEntity })
+const temp = reactive({ ...jobEntity })
 
 const writeRef = ref<ComponentRef<typeof Write>>()
 const createData = async () => {
   const writer = unref(writeRef)
   const formData = await writer?.submit()
   if (formData) {
-    const res = await request.post({ url: 'api/v1/system/user-group', data: formData })
+    const res = await request.post({ url: 'api/v1/system/job', data: formData })
     if (res) {
       dialogVisible.value = false
       ElMessage.success('保存成功！')
-      await getUserGroupList()
+      await getJobList()
     }
   }
 }
-const handleCreate = (row: any) => {
-  temp.parentGid = row ? row.gid : 0
+const handleCreate = (_: any) => {
   dialogVisible.value = true
   actionType.value = 'create'
 }
 const handleDelete = async (_: any, row: any) => {
-  const res = await request.delete({ url: 'api/v1/system/user-group/' + row.gid })
+  const res = await request.delete({ url: 'api/v1/system/job/' + row.jid })
   if (res) {
-    await getUserGroupList()
+    await getJobList()
     ElMessage.success('删除成功！')
   }
 }
 const handleDisable = async (row: any) => {
   const res = await request.put({
-    url: 'api/v1/system/user-group/' + row.gid,
+    url: 'api/v1/system/job/' + row.jid,
     data: { deleted: 1 }
   })
   if (res) {
-    await getUserGroupList()
+    await getJobList()
     ElMessage.success('禁用成功！')
   }
 }
@@ -116,7 +98,7 @@ watch(actionType, (val) => {
   dialogTitle.value = actionDict[val] + moduleText
 })
 
-getUserGroupList()
+getJobList()
 </script>
 
 <template>
@@ -125,16 +107,14 @@ getUserGroupList()
     <el-divider />
     <el-tree
       style="max-width: 600px"
-      :data="userGroupData"
+      :data="jobData"
       :props="{ label: 'name' }"
-      node-key="gid"
-      :expand-on-click-node="false"
+      node-key="jid"
       default-expand-all
     >
       <template #default="{ node, data }">
         <el-text style="width: 300px">{{ node.label }}</el-text>
         <el-space>
-          <el-link type="success" @click="handleCreate(data)">增加</el-link>
           <el-popconfirm title="继续禁用" @confirm="handleDisable(data)">
             <template #reference>
               <el-link type="warning"> 禁用 </el-link>

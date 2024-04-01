@@ -11,14 +11,6 @@ export const livestockRouter: AppRouteRecordRaw = {
   },
   children: [
     {
-      path: 'workspace',
-      name: 'LivestockWorkspace',
-      component: () => import('@/views/empty.vue'),
-      meta: {
-        title: '场所'
-      }
-    },
-    {
       path: 'index',
       name: 'LivestockIndex',
       component: () => import('@/views/empty.vue'),

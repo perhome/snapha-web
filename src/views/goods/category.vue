@@ -11,28 +11,28 @@ import { actionDict } from '@/constants/dict'
 import { useValidator } from '@/hooks/web/useValidator'
 
 defineOptions({
-  name: 'SystemUserGroup'
+  name: 'SystemGoodsCategory'
 })
 
 const { required } = useValidator()
 
-const moduleText = '用户组'
+const moduleText = '物料分类'
 
 const dialogVisible = ref(false)
 const dialogTitle = ref(moduleText)
 
 const actionType = ref('')
-const groupEntity = {
-  gid: null,
+const categoryEntity = {
+  gcid: null,
   name: null,
-  parentGid: null,
-  category: 'DEFAULT'
+  parentGcid: null,
+  gsn: ''
 }
 
 const formSchema = reactive<FormSchema[]>([
   {
     field: 'name',
-    label: '组名',
+    label: '名称',
     component: 'Input',
     formItemProps: {
       rules: [required()]
@@ -42,72 +42,57 @@ const formSchema = reactive<FormSchema[]>([
     }
   },
   {
-    field: 'gsn',
+    field: 'gcsn',
     label: '编号',
     component: 'Input',
     formItemProps: {},
     colProps: {
       span: 24
     }
-  },
-  {
-    field: 'category',
-    label: '类型',
-    component: 'RadioButton',
-    formItemProps: {},
-    componentProps: {
-      options: [
-        { label: '默认组', value: 'DEFAULT' },
-        { label: '功能组', value: 'FEATURE' }
-      ]
-    },
-    colProps: {
-      span: 24
-    }
   }
 ])
 
-const userGroupData = ref([])
+const goodsCategoryData = ref([])
 
-const getUserGroupList = async () => {
-  const res = await request.get({ url: 'api/v1/system/user-group/tree' })
-  userGroupData.value = res.data
+const getGoodsCategoryList = async () => {
+  const res = await request.get({ url: 'api/v1/goods-category/tree' })
+  goodsCategoryData.value = res.data
 }
 
-const temp = reactive({ ...groupEntity })
+const temp = reactive({ ...categoryEntity })
 
 const writeRef = ref<ComponentRef<typeof Write>>()
 const createData = async () => {
   const writer = unref(writeRef)
   const formData = await writer?.submit()
   if (formData) {
-    const res = await request.post({ url: 'api/v1/system/user-group', data: formData })
+    const res = await request.post({ url: 'api/v1/goods-category', data: formData })
     if (res) {
       dialogVisible.value = false
       ElMessage.success('保存成功！')
-      await getUserGroupList()
+      await getGoodsCategoryList()
     }
   }
 }
 const handleCreate = (row: any) => {
-  temp.parentGid = row ? row.gid : 0
+  temp.parentGcid = row ? row.gcid : 0
   dialogVisible.value = true
   actionType.value = 'create'
 }
 const handleDelete = async (_: any, row: any) => {
-  const res = await request.delete({ url: 'api/v1/system/user-group/' + row.gid })
+  const res = await request.delete({ url: 'api/v1/goods-category/' + row.gcid })
   if (res) {
-    await getUserGroupList()
+    await getGoodsCategoryList()
     ElMessage.success('删除成功！')
   }
 }
 const handleDisable = async (row: any) => {
   const res = await request.put({
-    url: 'api/v1/system/user-group/' + row.gid,
+    url: 'api/v1/goods-category/' + row.gcid,
     data: { deleted: 1 }
   })
   if (res) {
-    await getUserGroupList()
+    await getGoodsCategoryList()
     ElMessage.success('禁用成功！')
   }
 }
@@ -116,7 +101,7 @@ watch(actionType, (val) => {
   dialogTitle.value = actionDict[val] + moduleText
 })
 
-getUserGroupList()
+getGoodsCategoryList()
 </script>
 
 <template>
@@ -125,9 +110,9 @@ getUserGroupList()
     <el-divider />
     <el-tree
       style="max-width: 600px"
-      :data="userGroupData"
+      :data="goodsCategoryData"
       :props="{ label: 'name' }"
-      node-key="gid"
+      node-key="gcid"
       :expand-on-click-node="false"
       default-expand-all
     >

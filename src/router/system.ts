@@ -19,6 +19,39 @@ export const systemRouter: AppRouteRecordRaw = {
       }
     },
     {
+      path: 'department',
+      name: 'SystemDepartment',
+      component: () => import('@/views/system/department.vue'),
+      meta: {
+        title: '部门设置',
+        hidden: true,
+        canTo: true,
+        activeMenu: '/system/index'
+      }
+    },
+    {
+      path: 'job',
+      name: 'SystemJob',
+      component: () => import('@/views/system/job.vue'),
+      meta: {
+        title: '岗位设置',
+        hidden: true,
+        canTo: true,
+        activeMenu: '/system/index'
+      }
+    },
+    {
+      path: 'unit',
+      name: 'SystemUnit',
+      component: () => import('@/views/system/unit.vue'),
+      meta: {
+        title: '单位',
+        hidden: true,
+        canTo: true,
+        activeMenu: '/system/index'
+      }
+    },
+    {
       path: 'workspace',
       name: 'SystemWorkspace',
       component: () => import('@/views/system/workspace.vue'),

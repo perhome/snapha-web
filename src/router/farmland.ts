@@ -11,14 +11,6 @@ export const farmlandRouter: AppRouteRecordRaw = {
   },
   children: [
     {
-      path: 'index',
-      name: 'FarmLandIndex',
-      component: () => import('@/views/empty.vue'),
-      meta: {
-        title: '作业区块'
-      }
-    },
-    {
       path: 'cfr-workspace',
       name: 'FarmLandCfrWorkspace',
       component: () => import('@/views/empty.vue'),

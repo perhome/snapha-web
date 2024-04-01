@@ -13,19 +13,13 @@ export const goodsRouter: AppRouteRecordRaw = {
   children: [
     {
       path: 'index',
-      component: () => import('@/views/empty.vue'),
+      component: () => import('@/views/goods/index.vue'),
       name: 'GoodsIndex',
       meta: { title: '物资档案' }
     },
     {
-      path: 'map/:goodsId(\\d+)',
-      component: () => import('@/views/empty.vue'),
-      name: 'GoodsMap',
-      meta: { title: '物料关系映射', hidden: true, activeMenu: '/goods/index' }
-    },
-    {
       path: 'checkin',
-      component: () => import('@/views/empty.vue'),
+      component: () => import('@/views/goods/checkin.vue'),
       name: 'GoodsCheckin',
       meta: { title: '入库物资' }
     },
@@ -37,7 +31,7 @@ export const goodsRouter: AppRouteRecordRaw = {
     },
     {
       path: 'category',
-      component: () => import('@/views/empty.vue'),
+      component: () => import('@/views/goods/category.vue'),
       name: 'GoodsCategory',
       meta: { title: '物资分类' }
     },

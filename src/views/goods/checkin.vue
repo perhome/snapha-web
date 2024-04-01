@@ -13,7 +13,7 @@ import { BaseButton } from '@/components/Button'
 import { actionDict } from '@/constants/dict'
 
 defineOptions({
-  name: 'SystemProductIndex'
+  name: 'SystemGoodsCheckinCheckin'
 })
 
 const queryForm = reactive<{
@@ -23,22 +23,21 @@ const queryForm = reactive<{
   pageSize: 10,
   currentPage: 1
 })
-const moduleText = '产品'
+const moduleText = '入库物料'
 const dialogVisible = ref(false)
 const searchVisible = ref(false)
 const dialogTitle = ref(moduleText)
 
 const actionType = ref('')
-const productEntity = {
-  pid: null,
+const goodsCheckinEntity = {
+  gcid: null,
   name: null,
-  psn: null,
-  parentPid: null,
-  categoryId: null
+  gcsn: null,
+  unitId: null
 }
 const crudSchemas = reactive<CrudSchema[]>([
   {
-    field: 'pid',
+    field: 'gcid',
     label: 'ID',
     form: {
       hidden: true
@@ -46,43 +45,41 @@ const crudSchemas = reactive<CrudSchema[]>([
   },
   {
     field: 'name',
-    label: '名称',
+    label: '物料名称',
+    form: { hidden: true },
     search: {
       hidden: false
     }
   },
   {
-    field: 'psn',
-    label: '编号'
-  },
-  {
-    field: 'categoryId',
-    label: '分类',
+    field: 'goodsId',
     hidden: true,
-    form: { component: 'ProductCategory', hidden: false },
+    label: '物料',
+    form: { component: 'Goods', hidden: false },
     search: {
-      component: 'ProductCategory',
+      component: 'Goods',
       hidden: false
     }
   },
   {
-    field: 'unitId',
-    label: '单位',
-    hidden: true,
-    form: { component: 'Unit', hidden: false },
-    search: {
-      hidden: true
-    }
+    field: 'gcsn',
+    label: '登记编号'
   },
   {
-    field: 'created',
-    label: '创建日期',
+    field: 'rawQuantity',
+    form: { component: 'InputNumber', hidden: false },
     search: {
       hidden: true
     },
-    form: {
+    label: '数量'
+  },
+  {
+    field: 'rawAmount',
+    form: { component: 'InputNumber', hidden: false },
+    search: {
       hidden: true
-    }
+    },
+    label: '金额'
   },
   {
     field: 'action',
@@ -143,28 +140,28 @@ const tableData = reactive<{
   total: 0
 })
 
-const getProductList = async () => {
+const getGoodsCheckinList = async () => {
   tableData.loading = true
-  const res = await request.get({ url: 'api/v1/product', params: queryForm })
+  const res = await request.get({ url: 'api/v1/goods-checkin', params: queryForm })
   tableData.loading = false
   tableData.total = Number(res.data.totalRow)
   tableData.list = res.data.records
 }
 
-const temp = reactive({ ...productEntity })
+const temp = reactive({ ...goodsCheckinEntity })
 const rules = ref({
   name: [{ required: true, message: '不能未空！', trigger: 'blur' }]
 })
 const setSearchParams = (data: Recordable) => {
   queryForm.currentPage = 1
-  Object.assign(queryForm, Object.keys(data).length > 0 ? data : productEntity)
-  getProductList()
+  Object.assign(queryForm, Object.keys(data).length > 0 ? data : goodsCheckinEntity)
+  getGoodsCheckinList()
 }
 
 const handleCreate = () => {
   dialogVisible.value = true
   actionType.value = 'create'
-  Object.assign(temp, productEntity)
+  Object.assign(temp, goodsCheckinEntity)
 }
 
 const handleUpdate = (row) => {
@@ -175,19 +172,19 @@ const handleUpdate = (row) => {
 
 const handleSoftDelete = async (row: any) => {
   const res = await request.put({
-    url: 'api/v1/product/' + row.pid,
+    url: 'api/v1/goods-checkin/' + row.gcid,
     data: { deleted: 1 }
   })
   if (res) {
     ElMessage.success('操作成功！')
-    await getProductList()
+    await getGoodsCheckinList()
   }
 }
 
 const handleDelete = async (row: any) => {
-  const res = await request.delete({ url: 'api/v1/product/' + row.pid })
+  const res = await request.delete({ url: 'api/v1/goods-checkin/' + row.gcid })
   if (res) {
-    await getProductList()
+    await getGoodsCheckinList()
     ElMessage.success('删除成功！')
   }
 }
@@ -198,15 +195,15 @@ const createData = async () => {
   const formData = await writer?.submit()
   if (formData) {
     let res: any
-    if (formData.pid) {
-      res = await request.put({ url: 'api/v1/product/' + formData.pid, data: formData })
+    if (formData.gcid) {
+      res = await request.put({ url: 'api/v1/goods-checkin/' + formData.gcid, data: formData })
     } else {
-      res = await request.post({ url: 'api/v1/product', data: formData })
+      res = await request.post({ url: 'api/v1/goods-checkin', data: formData })
     }
     if (res) {
       dialogVisible.value = false
       ElMessage.success('保存成功！')
-      await getProductList()
+      await getGoodsCheckinList()
     }
   }
 }
@@ -216,16 +213,16 @@ watch(actionType, (val) => {
 })
 
 watch([() => queryForm.pageSize, () => queryForm.currentPage], () => {
-  getProductList()
+  getGoodsCheckinList()
 })
 
-getProductList()
+getGoodsCheckinList()
 </script>
 
 <template>
   <content-wrap>
     <BaseButton type="primary" @click="searchVisible = !searchVisible">检索</BaseButton>
-    <BaseButton type="primary" @click="getProductList">刷新</BaseButton>
+    <BaseButton type="primary" @click="getGoodsCheckinList">刷新</BaseButton>
     <BaseButton type="success" @click="handleCreate">新建</BaseButton>
     <el-divider />
     <Search
