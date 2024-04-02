@@ -73,7 +73,7 @@ const crudSchemas = reactive<CrudSchema[]>([
   },
   {
     field: 'unitId',
-    label: '默认单位',
+    label: '主单位',
     hidden: true,
     form: { component: 'Unit', hidden: false },
     search: {
@@ -114,7 +114,9 @@ const crudSchemas = reactive<CrudSchema[]>([
                 title="确认禁用？"
                 onConfirm={() => handleSoftDelete(data.row)}
                 v-slots={{
-                  reference: () => <BaseButton type="warning">禁用</BaseButton>
+                  reference: () => (
+                    <BaseButton type="warning">{data.row.deleted ? '启用' : '禁用'}</BaseButton>
+                  )
                 }}
               ></ElPopconfirm>
               <ElPopconfirm

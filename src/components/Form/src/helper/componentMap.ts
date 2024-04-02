@@ -27,7 +27,7 @@ import { IconPicker } from '@/components/IconPicker'
 import { IAgree } from '@/components/IAgree'
 import { ComponentName } from '../types'
 import { ProductCategorySelection } from '@/components/Product'
-import { GoodsCategorySelection, GoodsSelection } from '@/components/Goods'
+import { GoodsCategorySelection, GoodsMultipleSelection, GoodsSelection } from '@/components/Goods'
 import { UnitSelection } from '@/components/Unit'
 
 const componentMap: Recordable<Component, ComponentName> = {
@@ -57,6 +57,7 @@ const componentMap: Recordable<Component, ComponentName> = {
   JsonEditor: JsonEditor,
   IconPicker: IconPicker,
   IAgree: IAgree,
+  GoodsMultiple: GoodsMultipleSelection,
   Goods: GoodsSelection,
   GoodsCategory: GoodsCategorySelection,
   ProductCategory: ProductCategorySelection,

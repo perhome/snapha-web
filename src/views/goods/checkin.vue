@@ -32,6 +32,8 @@ const actionType = ref('')
 const goodsCheckinEntity = {
   gcid: null,
   name: null,
+  rawQuantity: null,
+  rawAmount: null,
   gcsn: null,
   unitId: null
 }
@@ -48,7 +50,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: '物料名称',
     form: { hidden: true },
     search: {
-      hidden: false
+      hidden: true
     }
   },
   {

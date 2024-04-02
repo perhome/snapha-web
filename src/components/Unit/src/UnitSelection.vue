@@ -10,8 +10,8 @@ interface unitScheme {
   usn: string
 }
 
-const unitId = defineModel<String | String[] | undefined>({ default: null })
-const unitName = defineModel<String | undefined>('unitName', { default: null })
+const unitId = defineModel<String | String[] | undefined>({ default: undefined })
+const unitName = defineModel<String | undefined>('unitName', { default: undefined })
 const multiple = defineModel<boolean | undefined>('multiple', { default: false })
 
 watch(unitId, (val) => {

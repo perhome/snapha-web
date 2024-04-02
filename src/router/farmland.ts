@@ -47,9 +47,22 @@ export const farmlandRouter: AppRouteRecordRaw = {
     {
       path: 'workstage',
       name: 'FarmLandWorkstage',
-      component: () => import('@/views/empty.vue'),
+      component: () => import('@/views/farmland/workstage.vue'),
       meta: {
         title: '工序'
+      }
+    },
+    {
+      path: 'workstage/create',
+      name: 'FarmLandWorkstageCreate',
+      component: () => import('@/views/farmland/workstage-create.vue'),
+      meta: {
+        title: '新建工序',
+        noTagsView: true,
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        activeMenu: '/farmland/workstage'
       }
     }
   ]

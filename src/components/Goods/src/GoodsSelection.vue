@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import request from '@/axios'
 import { ElSelect, ElOption } from 'element-plus'
 
-const goodsId = defineModel<String | undefined>({ default: null })
+const goodsId = defineModel<String | undefined>({ default: undefined })
 const goodsList = ref<any>([])
 
 const getGoodsList = async (keyword: String) => {
@@ -21,12 +21,17 @@ watch(
   goodsId,
   (val) => {
     if (!val) return
-    getGoodsList(val)
   },
   {
     immediate: true
   }
 )
+const init = () => {
+  if (goodsId.value) {
+    getGoodsList(goodsId.value)
+  }
+}
+init()
 </script>
 
 <template>

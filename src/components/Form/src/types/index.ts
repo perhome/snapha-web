@@ -59,6 +59,7 @@ export enum ComponentNameEnum {
   JSON_EDITOR = 'JsonEditor',
   ICON_PICKER = 'IconPicker',
   I_AGREE = 'IAgree',
+  GOODS_MULTIPLE = 'GoodsMultipleSelection',
   GOODS = 'GoodsSelection',
   GOODS_CATEGORY = 'GoodsCategorySelection',
   PRODUCT_CATEGORY = 'ProductCategorySelection',
