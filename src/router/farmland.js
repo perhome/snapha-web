@@ -12,15 +12,27 @@ export const farmlandRouter = {
     {
       path: 'cfr-workspace',
       name: 'FarmLandCfrWorkspace',
-      component: () => import('@/views/empty.vue'),
+      component: () => import('@/views/farmland/cfr-workspace.vue'),
       meta: {
         title: '茬口轮作'
       }
     },
     {
+      path: 'cfr/create',
+      name: 'FarmLandCfrCreate',
+      component: () => import('@/views/farmland/cfr-create.vue'),
+      meta: {
+        title: '新建茬口',
+        noCache: false,
+        hidden: true,
+        canTo: true,
+        activeMenu: '/farmland/cfr-workspace'
+      }
+    },
+    {
       path: 'cfr-task',
       name: 'FarmLandCfrTask',
-      component: () => import('@/views/empty.vue'),
+      component: () => import('@/views/farmland/task-create.vue'),
       meta: {
         title: '派工单'
       }
@@ -49,19 +61,6 @@ export const farmlandRouter = {
       component: () => import('@/views/farmland/workstage.vue'),
       meta: {
         title: '工序'
-      }
-    },
-    {
-      path: 'workstage/create',
-      name: 'FarmLandWorkstageCreate',
-      component: () => import('@/views/farmland/workstage-create.vue'),
-      meta: {
-        title: '新建工序',
-        noTagsView: true,
-        noCache: true,
-        hidden: true,
-        canTo: true,
-        activeMenu: '/farmland/workstage'
       }
     }
   ]

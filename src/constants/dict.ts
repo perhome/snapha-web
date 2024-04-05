@@ -5,3 +5,9 @@ export const actionDict = {
   update: '编辑',
   delete: '删除'
 }
+
+export enum SN {
+  Farmland = 'F',
+  Livestock = 'L',
+  Warehouse = 'W'
+}

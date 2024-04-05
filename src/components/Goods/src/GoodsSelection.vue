@@ -3,8 +3,13 @@ import { ref, watch } from 'vue'
 import request from '@/axios'
 import { ElSelect, ElOption } from 'element-plus'
 
-const goodsId = defineModel<String | undefined>({ default: undefined })
-const goodsList = ref<any>([])
+interface goodsScheme {
+  gid: string
+  name: string
+}
+
+const goodsId = defineModel<string | undefined>({ default: null })
+const goodsList = ref<goodsScheme[]>([])
 
 const getGoodsList = async (keyword: String) => {
   if (keyword.length < 2) return

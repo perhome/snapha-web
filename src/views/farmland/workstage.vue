@@ -34,6 +34,7 @@ const workstageEntity = {
   wid: null,
   name: null,
   wsn: null,
+  workspaceId: null,
   goods: []
 }
 const crudSchemas = reactive<CrudSchema[]>([
@@ -64,6 +65,21 @@ const crudSchemas = reactive<CrudSchema[]>([
     },
     form: {
       component: 'GoodsMultiple',
+      hidden: false
+    }
+  },
+  {
+    field: 'workspaceId',
+    label: '地点',
+    hidden: true,
+    search: {
+      hidden: true
+    },
+    form: {
+      component: 'Workspace',
+      componentProps: {
+        parentSn: 'F'
+      },
       hidden: false
     }
   },

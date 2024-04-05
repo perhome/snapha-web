@@ -1,3 +1,4 @@
 import ProductCategorySelection from './src/ProductCategorySelection.vue'
-export { ProductCategorySelection }
+import ProductSelection from './src/ProductSelection.vue'
+export { ProductSelection, ProductCategorySelection }
 //# sourceMappingURL=index.js.map

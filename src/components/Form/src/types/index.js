@@ -26,9 +26,12 @@ export var ComponentNameEnum
   ComponentNameEnum['JSON_EDITOR'] = 'JsonEditor'
   ComponentNameEnum['ICON_PICKER'] = 'IconPicker'
   ComponentNameEnum['I_AGREE'] = 'IAgree'
+  ComponentNameEnum['WORKSPACE'] = 'WorkspaceSelection'
+  ComponentNameEnum['WORKSPACE_MULTIPLE'] = 'WorkspaceMultipleSelection'
   ComponentNameEnum['GOODS_MULTIPLE'] = 'GoodsMultipleSelection'
   ComponentNameEnum['GOODS'] = 'GoodsSelection'
   ComponentNameEnum['GOODS_CATEGORY'] = 'GoodsCategorySelection'
+  ComponentNameEnum['PRODUCT'] = 'ProductSelection'
   ComponentNameEnum['PRODUCT_CATEGORY'] = 'ProductCategorySelection'
   ComponentNameEnum['UNIT'] = 'Unit'
 })(ComponentNameEnum || (ComponentNameEnum = {}))
