@@ -4,12 +4,21 @@ export const farmlandRouter: AppRouteRecordRaw = {
   path: '/farmland',
   component: Layout,
   name: 'FarmLand',
+  redirect: '/farmland/index',
   meta: {
     title: '种植',
     icon: 'ant-design:dashboard-filled',
     role: ['ADMIN', 'FARMLAND']
   },
   children: [
+    {
+      path: 'index',
+      name: 'FarmLandIndex',
+      component: () => import('@/views/farmland/index.vue'),
+      meta: {
+        title: '导航页'
+      }
+    },
     {
       path: 'cfr-workspace',
       name: 'FarmLandCfrWorkspace',

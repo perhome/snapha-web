@@ -1,8 +1,8 @@
 <script setup lang="tsx">
-import { reactive, ref, unref, watch } from 'vue'
-import { ElMessage, ElDivider, ElPopconfirm } from 'element-plus'
+import { h, reactive, ref, unref, watch } from 'vue'
+import { ElMessage, ElDivider, ElPopconfirm, ElTag } from 'element-plus'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
-import { Table } from '@/components/Table'
+import { Table, TableColumn } from '@/components/Table'
 import { Dialog } from '@/components/Dialog'
 import { Search } from '@/components/Search'
 import { FormSchema } from '@/components/Form'
@@ -12,11 +12,15 @@ import { ContentWrap } from '@/components/ContentWrap'
 import { BaseButton } from '@/components/Button'
 import { useRouter } from 'vue-router'
 import { actionDict } from '@/constants/dict'
+import { useValidator } from '@/hooks/web/useValidator'
 
 defineOptions({
   name: 'FarmlandCfrWorkspace'
 })
+
+const { required } = useValidator()
 const { push } = useRouter()
+
 const queryForm = reactive<{
   pageSize: number
   currentPage: number
@@ -34,6 +38,10 @@ const cfrWorkspaceEntity = {
   cwid: null,
   name: null,
   wsn: null,
+  startDate: null,
+  endDate: null,
+  realStartDate: null,
+  realEndDate: null,
   cfrWorkspaceId: null,
   goods: []
 }
@@ -43,27 +51,93 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: 'ID',
     form: {
       hidden: true
-    }
+    },
+    width: 160
   },
   {
     field: 'productName',
     label: '产品',
+    form: {
+      hidden: true
+    },
     search: {
+      component: 'Product',
       hidden: false
     }
   },
   {
     field: 'workspaceName',
-    label: '地块'
+    label: '地块',
+    search: {
+      component: 'WorkspaceMultiple',
+      hidden: false
+    },
+    form: {
+      hidden: true
+    }
+  },
+  {
+    field: 'startDate',
+    label: '计划开始',
+    search: {
+      component: 'DatePicker',
+      hidden: false
+    },
+    form: {
+      hidden: true
+    }
+  },
+  {
+    field: 'yield',
+    label: '产量',
+    search: {
+      hidden: true
+    },
+    form: {
+      hidden: true
+    }
+  },
+  {
+    field: 'realStartDate',
+    label: '实际开始',
+    hidden: true,
+    search: {
+      hidden: true
+    },
+    form: {
+      component: 'DatePicker',
+      hidden: false
+    }
+  },
+  {
+    field: 'realEndDate',
+    label: '实际结束',
+    hidden: true,
+    search: {
+      hidden: true
+    },
+    form: {
+      component: 'DatePicker',
+      hidden: false
+    }
   },
   {
     field: 'area',
-    label: '面积'
+    label: '面积',
+    formatter: (_: Recordable, __: TableColumn, cellValue: Number) => {
+      return h(ElTag, { type: 'success' }, () => cellValue)
+    },
+    search: {
+      hidden: true
+    },
+    form: {
+      hidden: true
+    }
   },
   {
     field: 'action',
     label: '操作',
-    cwidth: 360,
+    width: 360,
     form: {
       hidden: true
     },
@@ -80,6 +154,9 @@ const crudSchemas = reactive<CrudSchema[]>([
             <>
               <BaseButton type="primary" onClick={() => handleUpdate(data.row)}>
                 编辑
+              </BaseButton>
+              <BaseButton type="primary" onClick={() => handleDetail(data.row)}>
+                详情
               </BaseButton>
               <ElPopconfirm
                 title="确认禁用？"
@@ -102,6 +179,33 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   }
 ])
+
+const areaSchema = reactive<FormSchema[]>([
+  {
+    field: 'hitDate',
+    label: '生效日期',
+    component: 'DatePicker',
+    componentProps: { valueFormat: 'YYYY-MM-DD' },
+    formItemProps: {
+      rules: [required()]
+    },
+    colProps: {
+      span: 24
+    }
+  },
+  {
+    field: 'area',
+    component: 'InputNumber',
+    formItemProps: {
+      rules: [required()]
+    },
+    colProps: {
+      span: 24
+    },
+    label: '面积'
+  }
+])
+
 const extraSchema: FormSchema[] = []
 const formExtraSchema: FormSchema[] = []
 
@@ -140,9 +244,16 @@ const setSearchParams = (data: Recordable) => {
 const handleCreate = () => {
   push('/farmland/cfr/create')
 }
-const handleUpdate = (row) => {
+
+const handleUpdate = (row: any) => {
   dialogVisible.value = true
   actionType.value = 'update'
+  Object.assign(temp, row)
+}
+
+const handleDetail = (row: any) => {
+  dialogVisible.value = true
+  actionType.value = 'detail'
   Object.assign(temp, row)
 }
 
@@ -158,24 +269,38 @@ const handleDisable = async (row: any) => {
 }
 
 const writeRef = ref<ComponentRef<typeof Write>>()
+const writeAreaRef = ref<ComponentRef<typeof Write>>()
 const createData = async () => {
-  const writer = unref(writeRef)
-  const formData = await writer?.submit()
-  if (formData) {
-    let res: any
-    if (formData.cwid) {
-      res = await request.put({
-        url: 'api/v1/farmland/cfr-workspace/' + formData.cwid,
-        data: formData
-      })
-    } else {
-      res = await request.post({ url: 'api/v1/farmland/cfr-workspace', data: formData })
-    }
-    if (res) {
-      dialogVisible.value = false
-      ElMessage.success('保存成功！')
-      await getCfrWorkspaceList()
-    }
+  switch (actionType.value) {
+    case 'create':
+    case 'update':
+      const writer = unref(writeRef)
+      const formData = await writer?.submit()
+      if (formData) {
+        let res: any
+        if (formData.cwid) {
+          res = await request.put({
+            url: 'api/v1/farmland/cfr-workspace/' + formData.cwid,
+            data: formData
+          })
+        } else {
+          res = await request.post({ url: 'api/v1/farmland/cfr-workspace', data: formData })
+        }
+        if (res) {
+          dialogVisible.value = false
+          ElMessage.success('保存成功！')
+          await getCfrWorkspaceList()
+        }
+      }
+      break
+    case 'areaChange':
+      const writerArea = unref(writeAreaRef)
+      const formAreaData = await writerArea?.submit()
+      if (formAreaData) {
+        console.log(formAreaData)
+      }
+      break
+    default:
   }
 }
 
@@ -187,8 +312,19 @@ const handleDelete = async (row) => {
   }
 }
 
+const handleCellClick = (row: any, column: any, __: HTMLTableCellElement, ___: Event) => {
+  switch (column.property) {
+    case 'area':
+      dialogVisible.value = true
+      actionType.value = 'areaChange'
+      Object.assign(temp, row)
+      break
+    default:
+  }
+}
+
 watch(actionType, (val) => {
-  dialogTitle.value = actionDict[val] + moduleText
+  if (actionDict[val]) dialogTitle.value = actionDict[val] + moduleText
 })
 watch([() => queryForm.pageSize, () => queryForm.currentPage], () => {
   getCfrWorkspaceList()
@@ -220,6 +356,7 @@ init()
       v-model:currentPage="queryForm.currentPage"
       :columns="allSchemas.tableColumns"
       :data="tableData.list"
+      @cell-click="handleCellClick"
       :loading="tableData.loading"
       :pagination="{ total: tableData.total }"
       :border="false"
@@ -228,10 +365,17 @@ init()
 
   <Dialog v-model="dialogVisible" :title="dialogTitle">
     <Write
-      v-if="actionType !== 'detail'"
+      v-if="actionType === 'update'"
       ref="writeRef"
       :form-schema="allSchemas.formSchema"
       :rules="rules"
+      :current-row="temp"
+    />
+
+    <Write
+      v-if="actionType === 'areaChange'"
+      ref="writeAreaRef"
+      :form-schema="areaSchema"
       :current-row="temp"
     />
 
